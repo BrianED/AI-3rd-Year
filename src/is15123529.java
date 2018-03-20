@@ -2,7 +2,7 @@ import javax.swing.*;
 
 public class is15123529 {
     public static void main(String[] args) {
-
+        
         int[] values = new int[8];
         String[] dialogues = {
                 "Generations: ",                // 0 g
@@ -57,7 +57,7 @@ public class is15123529 {
         }
 
 
-        
+
         // ed is the ceil of e/d
         //System.out.println((double)e / d);
         ed = Math.ceil((double)e / d);
