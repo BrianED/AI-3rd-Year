@@ -2,7 +2,7 @@ import javax.swing.*;
 
 public class is15123529 {
     public static void main(String[] args) {
-        
+
         int[] values = new int[8];
         String[] dialogues = {
                 "Generations: ",                // 0 g
@@ -76,41 +76,5 @@ public class is15123529 {
             }
             System.out.println();
         }
-//        for(int i = 0; i < ss.length; i++) {
-//            for(int j = 0; j < ss[i].length; j++) {
-//                System.out.print(ss[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
-
-
-
-
-
-        //crap
-//        do {
-//            g = Integer.parseInt(JOptionPane.showInputDialog("Generations: "));
-//        } while(g < 0);
-//        do {
-//            p = Integer.parseInt(JOptionPane.showInputDialog("Population: "));
-//        } while(p < 0);
-//        do {
-//            s = Integer.parseInt(JOptionPane.showInputDialog("Students: "));
-//        } while(s < 0);
-//        do {
-//            do {
-//                e = Integer.parseInt(JOptionPane.showInputDialog("Total modules: "));
-//            } while(e < 0);
-//            do {
-//                c = Integer.parseInt(JOptionPane.showInputDialog("Course modules: "));
-//            } while(c < 0);
-//        } while(e < c);
-//        do {
-//            d = Integer.parseInt(JOptionPane.showInputDialog("Exam sessions/day: "));
-//        } while(d < 0);
-        /*
-        input for Cr and Mu
-         */
-//        ed = Math.ceil();
     }
 }
