@@ -3,11 +3,11 @@ import javax.swing.*;
 public class is15123529 {
     public static void main(String[] args) {
 
-        int tempCourse, tempMu, re, ed;
-        String userInput;
+        int re, ed;
+        String userInput = "", tempCourse = "", tempMu = "";
         String pattern = "[0-9]+";
         boolean valid;
-        int[] values = new int[8];
+        int[] params = new int[8];
         String[] dialogues = {
                 "Generations: ",                // 0 g
                 "Population: ",                 // 1 p
@@ -29,77 +29,76 @@ public class is15123529 {
                 "Mutation probability must be positive."
         };
 
-        for (int i = 0; i < values.length; i++) {
+        for (int i = 0; i < params.length; i++) {
             valid = false;
             while (!valid) {
                 userInput = JOptionPane.showInputDialog(null, dialogues[i]);
+                if (userInput == null || userInput.length() == 0) System.exit(1);
                 if (!userInput.matches(pattern))
                     JOptionPane.showMessageDialog(null, errors[i], "Error", JOptionPane.ERROR_MESSAGE);
                 else { // Check specific cases
                     if (i == 3) { // Check total modules >= course modules
                         while (true) {
-                            tempCourse = Integer.parseInt(JOptionPane.showInputDialog(null, "Course Modules: "));
-                            if (tempCourse <= Integer.parseInt(userInput) && tempCourse > 0) {
-                                values[i] = Integer.parseInt(userInput); // Add total module num to array
-                                values[++i] = tempCourse; // Add course module num to array
+                            tempCourse = JOptionPane.showInputDialog(null, "Course Modules: ");
+                            if (tempCourse == null || tempCourse.length() == 0) System.exit(1);
+                            if (Integer.parseInt(tempCourse) <= Integer.parseInt(userInput) &&
+                                    Integer.parseInt(tempCourse) > 0) {
+                                params[i] = Integer.parseInt(userInput); // Add total module num to array
+                                params[++i] = Integer.parseInt(tempCourse); // Add course module num to array
                                 break; // Exit loop
                             }
                             JOptionPane.showMessageDialog(null, errors[i], "Error", JOptionPane.ERROR_MESSAGE);
                         }
                         valid = true; // Break out of while loop
-                    } else if (i == 6) { // && ((values[3] + values[7]) < Integer.parseInt(userInput))
+                    } else if (i == 6) {
                         while (true) {
-                            tempMu = Integer.parseInt(JOptionPane.showInputDialog(null, "Mutation probability: "));
-                            re = (100 - (Integer.parseInt(userInput) + tempMu));
-                            System.out.println("Re: " + re);
-                            System.out.println("Sum of Re Cr Mu: " + (re + Integer.parseInt(userInput) + tempMu));
-                            if ((Integer.parseInt(userInput) < 100 && tempMu < 100) &&
-                                    (re + (Integer.parseInt(userInput) + tempMu) == 100 ) && tempMu > 0) {
-                                values[i] = Integer.parseInt(userInput); // Add Crossover probability num to array
-                                values[++i] = tempMu; // Add Mutation probability num to array
-                                break; // Exit loop
+                            tempMu = JOptionPane.showInputDialog(null, "Mutation probability: ");
+                            if (tempMu == null || tempMu.length() == 0) System.exit(1);
+                            re = (100 - (Integer.parseInt(userInput) + (Integer.parseInt(tempMu)))); // Re = 100 - (Cr + Mu)
+                            // System.out.println("Re: " + re);
+                            // System.out.println("Sum of Re Cr Mu: " + (re + Integer.parseInt(userInput) + tempMu));
+                            if ((Integer.parseInt(userInput) < 100) && (Integer.parseInt(tempMu) < 100) &&
+                                    ((re + Integer.parseInt(userInput) + Integer.parseInt(tempMu)) == 100 ) &&
+                                    (Integer.parseInt(tempMu) > 0)) {
+                                params[i] = Integer.parseInt(userInput); // Add Crossover probability num to array
+                                params[++i] = (Integer.parseInt(tempMu)); // Add Mutation probability num to array
+                                break; // Exit inner loop
                             }
-                            if (tempMu < 0)
+                            if ((Integer.parseInt(tempMu) < 0)) // Print error message for Mutation probability
                                 JOptionPane.showMessageDialog(null, errors[7], "Error", JOptionPane.ERROR_MESSAGE);
                             else
                                 JOptionPane.showMessageDialog(null, errors[i], "Error", JOptionPane.ERROR_MESSAGE);
                         }
                         valid = true; // Break out of while loop
                     } else {
-                        values[i] = Integer.parseInt(userInput);
+                        params[i] = Integer.parseInt(userInput);
                         valid = true; // Break out of while loop
                     }
                 }
             }
         }
-        System.out.println("Generations: "+values[0]);
-        System.out.println("Population: "+values[1]);
-        System.out.println("Students: "+values[2]);
-        System.out.println("Total modules: "+values[3]);
-        System.out.println("Course modules: "+values[4]);
-        System.out.println("Exam sessions/day: "+values[5]);
-        System.out.println("Crossover probability: "+values[6]);
-        System.out.println("Mutation probability: "+values[7]);
-System.exit(1);
 
+        //ed is the ceil of e/d
+        ed = (int) Math.ceil((double)params[3] / params[5]);
 
-        // ed is the ceil of e/d
-        //System.out.println((double)e / d);
-        //ed = Math.ceil((double)e / d);
-        //System.out.println(ed);
+        //2-D array Student Schedule (ss)
+        int[][] ss = new int[params[2]][params[4]];
+        int[] totalCourses = new int[params[3]];
 
-        // 2-D array Student Schedule (ss)        int[][] ss = new int[s][c];
-        ////        for(int row = 0; row < s; row++) {
-        ////            for(int col = 0; col < c; col++) {
-        ////                ss[row][col] = (int)(Math.random() * e + 1);
-        ////            }
-        ////        }
-        ////        for (int[] s1 : ss) {
-        ////            for (int aS1 : s1) {
-        ////                System.out.print(aS1 + " ");
-        ////            }
-        ////            System.out.println();
-        ////        }
-//
+        for(int i = 0, j = 1; i < totalCourses.length; i++, j++)
+            totalCourses[i] = j;
+        for(int i = 0; i < totalCourses.length; i++)
+            System.out.print(totalCourses[i] + " ");
+//        for(int row = 0; row < s; row++) {
+//            for(int col = 0; col < c; col++) {
+//                ss[row][col] = (int)(Math.random() * e + 1);
+//            }
+//        }
+//        for (int[] s1 : ss) {
+//            for (int aS1 : s1) {
+//                System.out.print(aS1 + " ");
+//            }
+//            System.out.println();
+//        }
     }
 }
