@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class is15123529 {
     public static void main(String[] args) {
@@ -61,7 +63,7 @@ public class is15123529 {
                                     ((re + Integer.parseInt(userInput) + Integer.parseInt(tempMu)) == 100 ) &&
                                     (Integer.parseInt(tempMu) > 0)) {
                                 params[i] = Integer.parseInt(userInput); // Add Crossover probability num to array
-                                params[++i] = (Integer.parseInt(tempMu)); // Add Mutation probability num to array
+                                params[++i] = Integer.parseInt(tempMu); // Add Mutation probability num to array
                                 break; // Exit inner loop
                             }
                             if ((Integer.parseInt(tempMu) < 0)) // Print error message for Mutation probability
@@ -77,18 +79,51 @@ public class is15123529 {
                 }
             }
         }
-
-        //ed is the ceil of e/d
         ed = (int) Math.ceil((double)params[3] / params[5]);
 
-        //2-D array Student Schedule (ss)
-        int[][] ss = new int[params[2]][params[4]];
-        int[] totalCourses = new int[params[3]];
+        int[][] studentSchedule = new int[params[2]][params[4]];
+        // Create a unique row
+        ArrayList<Integer> uniqueRow;
+        uniqueRow = generateRow();
+//        for (int i = 1; i <= params[3]; i++) {
+//            uniqueRow.add(i);
+//        }
+//        Collections.shuffle(uniqueRow);
 
-        for(int i = 0, j = 1; i < totalCourses.length; i++, j++)
-            totalCourses[i] = j;
-        for(int i = 0; i < totalCourses.length; i++)
-            System.out.print(totalCourses[i] + " ");
+        // Add unique row to 2d array
+        for (int row = 0, k = 0; row < studentSchedule.length; row++, k++) {
+            for (int col = 0; col < studentSchedule[row].length; col++) {
+                studentSchedule[row][col] = uniqueRow.get(col);
+            }
+            Collections.shuffle(uniqueRow);
+        }
+        for(int i = 0; i < studentSchedule.length; i++) {
+            for(int j = 0; j < studentSchedule[i].length; j++) {
+                System.out.print(studentSchedule[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+
+//        for(int i = 0, j = 1; i < totalCourses.length; i++, j++)
+//            totalCourses[i] = j;
+
+
+    }
+    public static int[] generateRow(int[] uniqueRow, length) {
+        for (int i = 1; i <= params[3]; i++) {
+            uniqueRow.add(i);
+        }
+        Collections.shuffle(uniqueRow);
+        return row;
+    }
+    public static String checkDuplicates() {
+
+        return "Found";
+    }
+}
+
+
 //        for(int row = 0; row < s; row++) {
 //            for(int col = 0; col < c; col++) {
 //                ss[row][col] = (int)(Math.random() * e + 1);
@@ -100,5 +135,3 @@ public class is15123529 {
 //            }
 //            System.out.println();
 //        }
-    }
-}
