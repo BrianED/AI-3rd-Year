@@ -1,14 +1,12 @@
 import javax.swing.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class is15123529 {
-    public static void main(String[] args) {
-
-        int re, ed;
-        String userInput = "", tempCourse = "", tempMu = "";
-        String pattern = "[0-9]+";
-        boolean valid;
+public class is15123529
+{
+    public static void main(String[] args)
+    {
         int[] params = new int[8];
         String[] dialogues = {
                 "Generations: ",                // 0 g
@@ -30,6 +28,19 @@ public class is15123529 {
                 "Crossover probability must be positive.",
                 "Mutation probability must be positive."
         };
+        params = userInput(dialogues, errors, params);
+        int[][] studentSchedule = new int[params[2]][params[4]];
+        ArrayList<Integer> uniqueRow = generateRow(params[3]);
+        studentSchedule = addRows(studentSchedule, uniqueRow);
+        printStudentSchedule(studentSchedule);
+    }
+
+    private static int[] userInput(String[] dialogues, String[] errors, int[] params)
+    {
+        int re, ed;
+        String userInput, tempCourse, tempMu;
+        String pattern = "[0-9]+";
+        boolean valid;
 
         for (int i = 0; i < params.length; i++) {
             valid = false;
@@ -57,8 +68,6 @@ public class is15123529 {
                             tempMu = JOptionPane.showInputDialog(null, "Mutation probability: ");
                             if (tempMu == null || tempMu.length() == 0) System.exit(1);
                             re = (100 - (Integer.parseInt(userInput) + (Integer.parseInt(tempMu)))); // Re = 100 - (Cr + Mu)
-                            // System.out.println("Re: " + re);
-                            // System.out.println("Sum of Re Cr Mu: " + (re + Integer.parseInt(userInput) + tempMu));
                             if ((Integer.parseInt(userInput) < 100) && (Integer.parseInt(tempMu) < 100) &&
                                     ((re + Integer.parseInt(userInput) + Integer.parseInt(tempMu)) == 100 ) &&
                                     (Integer.parseInt(tempMu) > 0)) {
@@ -81,57 +90,44 @@ public class is15123529 {
         }
         ed = (int) Math.ceil((double)params[3] / params[5]);
 
-        int[][] studentSchedule = new int[params[2]][params[4]];
-        // Create a unique row
-        ArrayList<Integer> uniqueRow;
-        uniqueRow = generateRow();
-//        for (int i = 1; i <= params[3]; i++) {
-//            uniqueRow.add(i);
-//        }
-//        Collections.shuffle(uniqueRow);
+        return params;
+    }
 
-        // Add unique row to 2d array
+    private static ArrayList<Integer> generateRow(int length)
+    {
+        ArrayList<Integer> uniqueRow = new ArrayList<>();
+
+        for (int i = 1; i <= length; i++) {
+            uniqueRow.add(i);
+        }
+        Collections.shuffle(uniqueRow);
+
+        return uniqueRow;
+    }
+
+    private static int[][] addRows(int[][] studentSchedule, ArrayList<Integer> uniqueRow)
+    {
+        // Add unique rows to 2d array
         for (int row = 0, k = 0; row < studentSchedule.length; row++, k++) {
             for (int col = 0; col < studentSchedule[row].length; col++) {
                 studentSchedule[row][col] = uniqueRow.get(col);
             }
             Collections.shuffle(uniqueRow);
         }
+
+        return studentSchedule;
+    }
+
+    private static void printStudentSchedule(int[][] studentSchedule)
+    {
         for(int i = 0; i < studentSchedule.length; i++) {
+            System.out.print("Student " + (i+1) + ": ");
             for(int j = 0; j < studentSchedule[i].length; j++) {
                 System.out.print(studentSchedule[i][j] + " ");
             }
             System.out.println();
         }
-
-
-//        for(int i = 0, j = 1; i < totalCourses.length; i++, j++)
-//            totalCourses[i] = j;
-
-
-    }
-    public static int[] generateRow(int[] uniqueRow, length) {
-        for (int i = 1; i <= params[3]; i++) {
-            uniqueRow.add(i);
-        }
-        Collections.shuffle(uniqueRow);
-        return row;
-    }
-    public static String checkDuplicates() {
-
-        return "Found";
     }
 }
-
-
-//        for(int row = 0; row < s; row++) {
-//            for(int col = 0; col < c; col++) {
-//                ss[row][col] = (int)(Math.random() * e + 1);
-//            }
-//        }
-//        for (int[] s1 : ss) {
-//            for (int aS1 : s1) {
-//                System.out.print(aS1 + " ");
-//            }
-//            System.out.println();
-//        }
+// System.out.println("Re: " + re);
+// System.out.println("Sum of Re Cr Mu: " + (re + Integer.parseInt(userInput) + tempMu));
