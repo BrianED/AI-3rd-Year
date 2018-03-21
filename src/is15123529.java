@@ -5,18 +5,23 @@ import java.util.Collections;
 
 public class is15123529
 {
+    /**
+     * TODO
+     * @param args
+     */
     public static void main(String[] args)
     {
-        int[] params = new int[8];
+        int ed;
+        int[] params = new int[8];                              // Array to hold user input parameters
         String[] dialogues = {
-                "Generations: ",                // 0 g
-                "Population: ",                 // 1 p
-                "Students: ",                   // 2 s
-                "Total modules: ",              // 3 e
-                "Course modules: ",             // 4 c
-                "Exam sessions/day: ",          // 5 d
-                "Crossover probability: ",      // 6 cr
-                "Mutation probability: "        // 7 mu
+                "Generations: ",                                // 0 g
+                "Population: ",                                 // 1 p
+                "Students: ",                                   // 2 s
+                "Total modules: ",                              // 3 e
+                "Course modules: ",                             // 4 c
+                "Exam sessions/day: ",                          // 5 d
+                "Crossover probability: ",                      // 6 cr
+                "Mutation probability: "                        // 7 mu
         };
         String[] errors = {
                 "Generations must be positive.",
@@ -28,18 +33,26 @@ public class is15123529
                 "Crossover probability must be positive.",
                 "Mutation probability must be positive."
         };
-        params = userInput(dialogues, errors, params);
-        int[][] studentSchedule = new int[params[2]][params[4]];
-        ArrayList<Integer> uniqueRow = generateRow(params[3]);
-        studentSchedule = addRows(studentSchedule, uniqueRow);
-        printStudentSchedule(studentSchedule);
+        params = userInput(dialogues, errors, params);          // Collect user input
+        ed = (int) Math.ceil((double)params[3] / params[5]);
+        int[][] studentSchedule = new int[params[2]][params[4]];// Student schedule (num of students x course modules)
+        ArrayList<Integer> uniqueRow = generateRow(params[3]);  // Generate unique row from total number of modules
+        studentSchedule = addRows(studentSchedule, uniqueRow);  // Add shuffled unique rows to each row in the 2D array
+        printStudentSchedule(studentSchedule);                  // Print student schedule to console
     }
 
+    /**
+     * TODO
+     * @param dialogues
+     * @param errors
+     * @param params
+     * @return
+     */
     private static int[] userInput(String[] dialogues, String[] errors, int[] params)
     {
-        int re, ed;
+        int re;
         String userInput, tempCourse, tempMu;
-        String pattern = "[0-9]+";
+        String pattern = "[0-9]+"; // Numbers 0 to 9 (1 or more)
         boolean valid;
 
         for (int i = 0; i < params.length; i++) {
@@ -88,11 +101,15 @@ public class is15123529
                 }
             }
         }
-        ed = (int) Math.ceil((double)params[3] / params[5]);
 
         return params;
     }
 
+    /**
+     * TODO
+     * @param length
+     * @return
+     */
     private static ArrayList<Integer> generateRow(int length)
     {
         ArrayList<Integer> uniqueRow = new ArrayList<>();
@@ -105,6 +122,12 @@ public class is15123529
         return uniqueRow;
     }
 
+    /**
+     * TODO
+     * @param studentSchedule
+     * @param uniqueRow
+     * @return
+     */
     private static int[][] addRows(int[][] studentSchedule, ArrayList<Integer> uniqueRow)
     {
         // Add unique rows to 2d array
@@ -118,6 +141,10 @@ public class is15123529
         return studentSchedule;
     }
 
+    /**
+     * TODO
+     * @param studentSchedule
+     */
     private static void printStudentSchedule(int[][] studentSchedule)
     {
         for(int i = 0; i < studentSchedule.length; i++) {
