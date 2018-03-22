@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -11,7 +10,7 @@ public class is15123529
      */
     public static void main(String[] args)
     {
-        int ed;
+        int ed, fitnessCost = 0;
         int[] params = new int[8];                              // Array to hold user input parameters
         String[] dialogues = {
                 "Generations: ",                                // 0 g
@@ -35,17 +34,73 @@ public class is15123529
         };
         params = userInput(dialogues, errors, params);          // Collect user input
         ed = (int) Math.ceil((double)params[3] / params[5]);    // Total modules / Exam sessions per day
-        System.out.println("ED: " + ed);
+        System.out.println("ED: " + ed); // TODO: 22/03/2018 remove print
         int[][] studentSchedule = new int[params[2]][params[4]];// Student schedule (num of students x course modules)
         ArrayList<Integer> uniqueRow = generateRow(params[3]);  // Generate unique row from total number of modules
         studentSchedule = addRows(studentSchedule, uniqueRow);  // Add shuffled unique rows to each row in the 2D array
-        printStudentSchedule(studentSchedule, "Student");                  // Print student schedule to console
+        printStudentSchedule(studentSchedule, "Student", 0);    // Print student schedule to console
 
         // Orderings
         int[][] orderings = new int[params[1]][params[3]];      // [Population][total modules]
         ArrayList<Integer> uniqueOrdering = generateRow(params[3]);
         orderings = addRows(orderings, uniqueOrdering);
-        printStudentSchedule(orderings, "Ordering");
+
+        // divide orderings rows into 2d array with ED as rows
+        int[][] split = new int[ed][params[5]];
+        split = splitOrdering(orderings, ed, params[5]);
+        System.out.println();
+        // TODO: 22/03/2018 print split to see if its working lol
+        for (int i = 0; i < split.length; i++) {
+            for (int j = 0; j < split[i].length; j++) {
+                System.out.print(split[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+        // Fitness function
+        // loop the number of populations ????????
+        if(checkIfOverlap(studentSchedule[0], orderings[0]))
+            fitnessCost++;
+        // boolean return type function to determine is two arrays have duplicates
+        // create array the size of the ED
+        // take ordering arraylist and split into 2d array
+        // length of each row will be ED
+
+        // Print results
+        printStudentSchedule(orderings, "Ordering", fitnessCost);
+    }
+
+    private static int[][] splitOrdering(int[][] orderings, int row, int col)
+    {
+        // TODO: 22/03/2018 might need to swap row and col
+        int count = 0;6
+
+        int[][] split = new int[col][row];
+        for (int i = 0; i < split.length; i++) {
+            for (int j = 0; j < split[i].length; j++) {
+                if (count > orderings[0].length - 1)
+                    split[i][j] = -1;
+                else if (count < orderings[0].length){
+                    split[i][j] = orderings[0][count];
+                    count++;
+                }
+            }
+        }
+
+        return split;
+    }
+
+    private static boolean checkIfOverlap(int[] a, int[] b)
+    {
+        boolean check = false;
+        int ctr = 0;
+
+        for(int i = 0; i < a.length; i++)
+            for(int j = 0; j < b.length; j++)
+                if(a[i] == b[j])
+                    ctr++;
+
+        return check = (ctr > 1) ? true : false;
     }
 
     /**
@@ -152,17 +207,27 @@ public class is15123529
      * TODO
      * @param studentSchedule
      */
-    private static void printStudentSchedule(int[][] studentSchedule, String s)
+    private static void printStudentSchedule(int[][] studentSchedule, String s, int fitnessCost)
     {
-        // TODO: 22/03/2018 IF STRING EQUAlS ORDERING PRINT FITNESS COST TOO 
+        // TODO: 22/03/2018 IF STRING EQUAlS ORDERING PRINT FITNESS COST TOO
         for(int i = 0; i < studentSchedule.length; i++) {
             System.out.print(s + " " + (i+1) + ": ");
             for(int j = 0; j < studentSchedule[i].length; j++) {
                 System.out.print(studentSchedule[i][j] + " ");
             }
+            if (s.equalsIgnoreCase("Ordering"))
+                System.out.print(": Fitness Cost: " + fitnessCost);
             System.out.println();
         }
     }
 }
 // System.out.println("Re: " + re);
 // System.out.println("Sum of Re Cr Mu: " + (re + Integer.parseInt(userInput) + tempMu));
+
+//System.out.println("Test");
+//        for(int i = 0; i < studentSchedule[0].length; i++)
+//        System.out.print(studentSchedule[0][i] + " ");
+//        System.out.println("\nTest");
+//        for(int i = 0; i < orderings[0].length; i++)
+//        System.out.print(orderings[0][i] + " ");
+//        System.out.println("\nTest");
