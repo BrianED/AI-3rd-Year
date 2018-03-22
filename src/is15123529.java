@@ -46,48 +46,22 @@ public class is15123529
         orderings = addRows(orderings, uniqueOrdering);
 
         // divide orderings rows into 2d array with ED as rows
-        int[][] split = new int[ed][params[5]];
+        int[][] split;
         split = splitOrdering(orderings, ed, params[5]);
-        System.out.println();
-        // TODO: 22/03/2018 print split to see if its working lol
-        for (int i = 0; i < split.length; i++) {
-            for (int j = 0; j < split[i].length; j++) {
-                System.out.print(split[i][j] + " ");
+
+        //print2dArray(split);
+
+        // Fitness function
+        for (int i = 0; i < studentSchedule.length; i++) {
+            for (int j = 0; j < studentSchedule[0].length; j++) {
+                if(checkIfOverlap(studentSchedule[i], split[j]))
+                    fitnessCost++;
             }
             System.out.println();
         }
 
-        // Fitness function
-        // loop the number of populations ????????
-        if(checkIfOverlap(studentSchedule[0], orderings[0]))
-            fitnessCost++;
-        // boolean return type function to determine is two arrays have duplicates
-        // create array the size of the ED
-        // take ordering arraylist and split into 2d array
-        // length of each row will be ED
-
         // Print results
         printStudentSchedule(orderings, "Ordering", fitnessCost);
-    }
-
-    private static int[][] splitOrdering(int[][] orderings, int row, int col)
-    {
-        // TODO: 22/03/2018 might need to swap row and col
-        int count = 0;6
-
-        int[][] split = new int[col][row];
-        for (int i = 0; i < split.length; i++) {
-            for (int j = 0; j < split[i].length; j++) {
-                if (count > orderings[0].length - 1)
-                    split[i][j] = -1;
-                else if (count < orderings[0].length){
-                    split[i][j] = orderings[0][count];
-                    count++;
-                }
-            }
-        }
-
-        return split;
     }
 
     private static boolean checkIfOverlap(int[] a, int[] b)
@@ -101,6 +75,26 @@ public class is15123529
                     ctr++;
 
         return check = (ctr > 1) ? true : false;
+    }
+
+    private static int[][] splitOrdering(int[][] orderings, int ed, int params)
+    {
+        // TODO: 22/03/2018 might need to swap row and col
+        int count = 0;
+
+        int[][] split = new int[params][ed];
+        for (int i = 0; i < split.length; i++) {
+            for (int j = 0; j < split[i].length; j++) {
+                if (count > orderings[0].length - 1)
+                    split[i][j] = -1;
+                else if (count < orderings[0].length){
+                    split[i][j] = orderings[0][count];
+                    count++;
+                }
+            }
+        }
+
+        return split;
     }
 
     /**
@@ -217,6 +211,15 @@ public class is15123529
             }
             if (s.equalsIgnoreCase("Ordering"))
                 System.out.print(": Fitness Cost: " + fitnessCost);
+            System.out.println();
+        }
+    }
+
+    private static void print2dArray(int[][] array) {
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                System.out.print(array[i][j] + " ");
+            }
             System.out.println();
         }
     }
