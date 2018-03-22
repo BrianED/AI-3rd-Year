@@ -34,11 +34,18 @@ public class is15123529
                 "Mutation probability must be positive."
         };
         params = userInput(dialogues, errors, params);          // Collect user input
-        ed = (int) Math.ceil((double)params[3] / params[5]);
+        ed = (int) Math.ceil((double)params[3] / params[5]);    // Total modules / Exam sessions per day
+        System.out.println("ED: " + ed);
         int[][] studentSchedule = new int[params[2]][params[4]];// Student schedule (num of students x course modules)
         ArrayList<Integer> uniqueRow = generateRow(params[3]);  // Generate unique row from total number of modules
         studentSchedule = addRows(studentSchedule, uniqueRow);  // Add shuffled unique rows to each row in the 2D array
-        printStudentSchedule(studentSchedule);                  // Print student schedule to console
+        printStudentSchedule(studentSchedule, "Student");                  // Print student schedule to console
+
+        // Orderings
+        int[][] orderings = new int[params[1]][params[3]];      // [Population][total modules]
+        ArrayList<Integer> uniqueOrdering = generateRow(params[3]);
+        orderings = addRows(orderings, uniqueOrdering);
+        printStudentSchedule(orderings, "Ordering");
     }
 
     /**
@@ -131,7 +138,7 @@ public class is15123529
     private static int[][] addRows(int[][] studentSchedule, ArrayList<Integer> uniqueRow)
     {
         // Add unique rows to 2d array
-        for (int row = 0, k = 0; row < studentSchedule.length; row++, k++) {
+        for (int row = 0; row < studentSchedule.length; row++) {
             for (int col = 0; col < studentSchedule[row].length; col++) {
                 studentSchedule[row][col] = uniqueRow.get(col);
             }
@@ -145,10 +152,11 @@ public class is15123529
      * TODO
      * @param studentSchedule
      */
-    private static void printStudentSchedule(int[][] studentSchedule)
+    private static void printStudentSchedule(int[][] studentSchedule, String s)
     {
+        // TODO: 22/03/2018 IF STRING EQUAlS ORDERING PRINT FITNESS COST TOO 
         for(int i = 0; i < studentSchedule.length; i++) {
-            System.out.print("Student " + (i+1) + ": ");
+            System.out.print(s + " " + (i+1) + ": ");
             for(int j = 0; j < studentSchedule[i].length; j++) {
                 System.out.print(studentSchedule[i][j] + " ");
             }
