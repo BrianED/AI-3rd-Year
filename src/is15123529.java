@@ -39,7 +39,6 @@ public class is15123529
 //        scanner.nextLine();
 
         ed = (int) Math.ceil((double)params[3] / params[5]);    // Total modules / Exam sessions per day
-        System.out.println("ED: " + ed); // TODO: 22/03/2018 remove print
         int[][] studentSchedule = new int[params[2]][params[4]];// Student schedule (num of students x course modules)
         ArrayList<Integer> uniqueRow = generateRow(params[3]);  // Generate unique row from total number of modules
         studentSchedule = addRows(studentSchedule, uniqueRow);  // Add shuffled unique rows to each row in the 2D array
@@ -53,7 +52,8 @@ public class is15123529
         // divide orderings rows into 2d array with ED as rows
 //        int[][] split;
 //        split = splitOrdering(orderings, ed, params[5], studentSchedule);
-        splitOrdering(orderings, ed, params[5], studentSchedule);
+        int[] results;
+        results = splitOrdering(orderings, ed, params[5], studentSchedule);
 
         //print2dArray(split);
 
@@ -69,7 +69,7 @@ public class is15123529
         // Print results
         // dont print fitness cost here, print it after each ordering
         //printStudentSchedule(orderings, "Ordering", fitnessCost);
-        printOrdering(orderings, fitnessCost);
+        printOrdering(orderings, fitnessCost, results);
     }
 
     /**
@@ -90,24 +90,23 @@ public class is15123529
         }
     }
 
-    private static void printOrdering(int[][] ordering, int fitnessCost) {
+    private static void printOrdering(int[][] ordering, int fitnessCost, int[] results) {
         for(int i = 0; i < ordering.length; i++) {
             System.out.print("Ordering " + (i+1) + ": ");
             for(int j = 0; j < ordering[i].length; j++) {
                 System.out.print(ordering[i][j] + " ");
             }
-            System.out.print(": Fitness Cost: " + fitnessCost);
+            System.out.print(": Fitness Cost: " + results[i]);
             System.out.println();
         }
     }
 
-    private static int[][] splitOrdering(int[][] orderings, int ed, int params, int[][] studentSchedule)
+    private static int[] splitOrdering(int[][] orderings, int ed, int params, int[][] studentSchedule)
     {
-        // TODO: 22/03/2018 might need to swap row and col
+        int[] results = new int[orderings.length];
         int count = 0;
         int fitnessCost = 0;
         int[][] split = new int[params][ed];
-
         for (int k = 0; k < orderings.length; k++) {
             for (int i = 0; i < split.length; i++) {
                 for (int j = 0; j < split[i].length; j++) {
@@ -124,17 +123,28 @@ public class is15123529
              */
             for (int i = 0; i < studentSchedule.length; i++) {
                 for (int j = 0; j < studentSchedule[0].length; j++) {
-                    if(checkIfOverlap(studentSchedule[i], split[j]))
+                    if(checkIfOverlap(studentSchedule[i], split[j])) {
                         fitnessCost++;
+                    }
                 }
             }
-            System.out.println("FITNESS: " + fitnessCost);
+            results[k] = fitnessCost;
+            fitnessCost = 0;
+            count = 0;
         }
-        return split;
+        return results;
     }
 
     private static boolean checkIfOverlap(int[] a, int[] b)
     {
+//        for (int i = 0; i < a.length; i++) {
+//            System.out.print("testing"+a[i] + " ");
+//        }
+//        System.out.println();
+//        for (int i = 0; i < b.length; i++) {
+//            System.out.print("testing"+b[i]+" ");
+//        }
+//        System.out.println();
         boolean check = false;
         int ctr = 0;
 
