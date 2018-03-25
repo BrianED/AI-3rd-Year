@@ -20,14 +20,14 @@ public class is15123529
                 "Mutation probability: "                        // params[7]
         };
         String[] errors = {
-                "Generations must be positive.",
-                "Population must be positive.",
-                "Students must be positive.",
-                "Total modules must be greater than course modules and both must be greater than 0",
-                "Total modules must be greater than course modules and both must be greater than 0",
-                "Exam sessions/day must be positive.",
-                "Crossover probability must be positive.",
-                "Mutation probability must be positive."
+                "Generations must be a positive integer.",
+                "Population must be a positive integer.",
+                "Students must be a positive integer.",
+                "Total modules must be a positive integer (Total modules must be greater then course modules)",
+                "Total modules must be a positive integer (Total modules must be greater then course modules)",
+                "Exam sessions/day must be a positive integer.",
+                "Crossover probability must be a positive integer (1 - 100).",
+                "Mutation probability must be a positive integer (1 - 100)."
         };
 
         /* User input */
@@ -90,10 +90,9 @@ public class is15123529
      */
     private static int[] splitOrdering(int[][] orderings, int ed, int params, int[][] studentSchedule)
     {
-        // TODO: 23/03/2018 Could replace int[][] orderings with params[1] 
         int count = 0;
         int fitnessCost = 0;
-        int[] results = new int[orderings.length];
+        int[] results = new int[orderings.length]; // ordering.length == params[1]
         int[][] split = new int[params][ed];
 
         for (int k = 0; k < orderings.length; k++) {
@@ -176,14 +175,24 @@ public class is15123529
             valid = false;
             while (!valid) {
                 userInput = JOptionPane.showInputDialog(null, dialogues[i]);
-                if (userInput == null || userInput.length() == 0) System.exit(1);
+                if (userInput == null) { // Cancel button
+                    JOptionPane.showMessageDialog(null, "Exiting program");
+                    System.exit(1);
+                }
                 if (!userInput.matches(pattern))
                     JOptionPane.showMessageDialog(null, errors[i], "Error", JOptionPane.ERROR_MESSAGE);
                 else { // Check specific cases
                     if (i == 3) { // Check total modules >= course modules
                         while (true) {
                             tempCourse = JOptionPane.showInputDialog(null, "Course Modules: ");
-                            if (tempCourse == null || tempCourse.length() == 0) System.exit(1);
+                            if (tempCourse == null) {
+                                JOptionPane.showMessageDialog(null, "Exiting program");
+                                System.exit(0);
+                            }
+                            else if (tempCourse.length() == 0) {
+                                JOptionPane.showMessageDialog(null, errors[4], "Error", JOptionPane.ERROR_MESSAGE);
+                                tempCourse = JOptionPane.showInputDialog(null, "Course Modules: ");
+                            }
                             if (Integer.parseInt(tempCourse) <= Integer.parseInt(userInput) &&
                                     Integer.parseInt(tempCourse) > 0) {
                                 params[i] = Integer.parseInt(userInput); // Add total module num to array
@@ -196,7 +205,14 @@ public class is15123529
                     } else if (i == 6) {
                         while (true) {
                             tempMu = JOptionPane.showInputDialog(null, "Mutation probability: ");
-                            if (tempMu == null || tempMu.length() == 0) System.exit(1);
+                            if (tempMu == null) {
+                                JOptionPane.showMessageDialog(null, "Exiting program");
+                                System.exit(0);
+                            }
+                            else if (tempMu.length() == 0) {
+                                JOptionPane.showMessageDialog(null, errors[4], "Error", JOptionPane.ERROR_MESSAGE);
+                                tempMu = JOptionPane.showInputDialog(null, "Course Modules: ");
+                            }
                             re = (100 - (Integer.parseInt(userInput) + (Integer.parseInt(tempMu)))); // Re=100-(Cr + Mu)
                             if ((Integer.parseInt(userInput) < 100) && (Integer.parseInt(tempMu) < 100) &&
                                     ((re + Integer.parseInt(userInput) + Integer.parseInt(tempMu)) == 100 ) &&
