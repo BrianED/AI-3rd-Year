@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Scanner;
 
@@ -47,18 +48,65 @@ public class is15123529
         Scanner scanner = new Scanner(System.in);
         scanner.nextLine();
         System.out.println("Population\n");
-
-        /* Generate orderings and add these to 2D array */
         int[][] orderings = new int[params[1]][params[3]];      // [Population][total modules]
-        ArrayList<Integer> uniqueOrdering = generateRow(params[3]);
-        orderings = addRows(orderings, uniqueOrdering);
+        ArrayList<Integer> uniqueOrdering;
+        int[] results = new int[params[1]];
 
-        /* Split the orderings and return the fitness cost */
-        int[] results;
-        results = splitOrdering(orderings, ed, params[5], studentSchedule);
+        int uniqueCounter = 0;
+        boolean rowDuplicateCheck = false;
+        while (!rowDuplicateCheck) {
+
+            /* Generate orderings and add these to 2D array */
+
+            uniqueOrdering = generateRow(params[3]);
+            orderings = addRows(orderings, uniqueOrdering);
+
+            /* Split the orderings and return the fitness cost */
+
+            results = splitOrdering(orderings, ed, params[5], studentSchedule);
+            uniqueCounter++;
+            if(uniqueCounter > params[1]) {
+                JOptionPane.showMessageDialog(null, "Duplicate rows\nExiting");
+                System.exit(0);
+            }
+            rowDuplicateCheck = uniqueOrderings(orderings);
+        }
 
         /* Print orderings and fitness cost */
         printResults(orderings, results, "Ordering");
+    }
+
+    /**
+     * This method takes the orderings 2D array and takes two rows and sends them to another method
+     * @param orderings 2D Orderings array
+     * @return
+     */
+    private static boolean uniqueOrderings(int [][] orderings)
+    {
+        for(int i=0; i < orderings.length; i++) {
+            for(int j = i + 1; j < orderings.length; j++) {
+                if (orderingsMatch(orderings[i], orderings[j])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+
+    }
+
+    /**
+     * This method takes 2 parameters and compares the same element of each to check for duplicate rows
+     * @param orderingA An ordering
+     * @param orderingB The next ordering
+     * @return
+     */
+    private static boolean orderingsMatch(int [] orderingA, int[] orderingB) {
+        for (int i = 0; i < orderingA.length; i++) {
+            if (orderingA[i] != orderingB[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -99,11 +147,11 @@ public class is15123529
             for (int i = 0; i < split.length; i++) {
                 for (int j = 0; j < split[i].length; j++) {
                     /*
-                    Fill rest of row with -1 of the count is greater than the length of the array
+                    Fill rest of row with -1 if the count is greater than the length of the array
                      */
                     if (count > orderings[k].length - 1)
                         split[i][j] = -1;
-                    else if (count < orderings[k].length){
+                    else if (count < orderings[k].length) {
                         split[i][j] = orderings[k][count];
                         count++;
                     }
@@ -177,7 +225,7 @@ public class is15123529
                 userInput = JOptionPane.showInputDialog(null, dialogues[i]);
                 if (userInput == null) { // Cancel button
                     JOptionPane.showMessageDialog(null, "Exiting program");
-                    System.exit(1);
+                    System.exit(0);
                 }
                 if (!userInput.matches(pattern))
                     JOptionPane.showMessageDialog(null, errors[i], "Error", JOptionPane.ERROR_MESSAGE);
