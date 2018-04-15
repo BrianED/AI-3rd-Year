@@ -50,7 +50,7 @@ public class is15123529
         System.out.println("Population\n");
         int[][] orderings = new int[params[1]][params[3]];      // [Population][total modules]
         ArrayList<Integer> uniqueOrdering;
-        int[] results = new int[params[1]];
+        int[] fitnessCostArray = new int[params[1]];
 
         int uniqueCounter = 0;
         boolean rowDuplicateCheck = false;
@@ -63,7 +63,7 @@ public class is15123529
 
             /* Split the orderings and return the fitness cost */
 
-            results = splitOrdering(orderings, ed, params[5], studentSchedule);
+            fitnessCostArray = splitOrdering(orderings, ed, params[5], studentSchedule);
             uniqueCounter++;
             if(uniqueCounter > params[1]) {
                 JOptionPane.showMessageDialog(null, "Duplicate rows\nExiting");
@@ -73,7 +73,60 @@ public class is15123529
         }
 
         /* Print orderings and fitness cost */
-        printResults(orderings, results, "Ordering");
+        printResults(orderings, fitnessCostArray, "Ordering");
+
+        int re = (100 - (params[6] + params[7]));
+        int generationCounter = 0;
+        while (generationCounter < params[0]) {
+            /*
+            Selection
+             */
+            orderings = selection(orderings, fitnessCostArray);
+
+            generationCounter++;
+        }
+    }
+
+    /**
+     * This method takes the orderings and the fitness costs as parameters and takes the first element of
+     * the fitness cost array and
+     * @param orderings
+     * @param fitnessCostArray
+     * @return
+     */
+    private static int[][] selection(int[][] orderings, int[] fitnessCostArray)
+    {
+        int counter = 0;
+        int temp;
+        int[] tempArray;
+        boolean swapped = false;
+
+        while (!swapped) {
+            swapped = false;
+            counter++;
+            for (int i = 0; i < fitnessCostArray.length - counter; i++) {
+                if (fitnessCostArray[i] > fitnessCostArray[i + 1]) {
+                    temp = fitnessCostArray[i];
+                    tempArray = orderings[i];
+                    fitnessCostArray[i] = fitnessCostArray[i + 1];
+                    orderings[i] = orderings[i + 1];
+                    fitnessCostArray[i + 1] = temp;
+                    orderings[i + 1]=tempArray;
+                    swapped = true;
+                }
+            }
+        }
+
+        int split = (int)Math.ceil((double)orderings.length / 3);
+        /*
+        Replace the s3 orderings with the s1 orderings
+         */
+        for(int i = 0; i < split; i++) {
+            orderings[orderings.length - split + i] = orderings[i];
+            fitnessCostArray[orderings.length - split + i ] = fitnessCostArray[i];
+        }
+
+        return orderings;
     }
 
     /**
@@ -91,7 +144,6 @@ public class is15123529
             }
         }
         return true;
-
     }
 
     /**
