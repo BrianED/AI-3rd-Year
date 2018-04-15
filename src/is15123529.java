@@ -75,6 +75,9 @@ public class is15123529
         /* Print orderings and fitness cost */
         printResults(orderings, fitnessCostArray, "Ordering");
 
+        /*
+        Genetic Algorithm
+         */
         int re = (100 - (params[6] + params[7]));
         int generationCounter = 0;
         while (generationCounter < params[0]) {
@@ -82,16 +85,59 @@ public class is15123529
             Selection
              */
             orderings = selection(orderings, fitnessCostArray);
+            /*
+            Mutation
+             */
+            orderings = mutation(orderings);
 
             generationCounter++;
         }
     }
 
     /**
+     * This method takes the orderings 2D array and picks a random row
+     * It then swaps two elements in this row and adds the row back to the 2D orderings array
+     * @param orderings 2D Orderings Array
+     * @return
+     */
+    private static int[][] mutation(int[][] orderings)
+    {
+        int r1;
+        int r2;
+        int temp;
+        int randomRow = (int) (Math.random() * orderings.length);
+        int[] tempArray = orderings[randomRow];
+
+        boolean exit = false;
+        while (!exit) {
+            r1 = (int) (Math.random() * orderings[randomRow].length);
+            r2 = (int) (Math.random() * orderings[randomRow].length);
+            if (r1 == r2) {
+                exit = false;
+            } else {
+				/*
+				swap elements
+				 */
+                temp = tempArray[r1];
+                tempArray[r1] = tempArray[r2];
+                tempArray[r2] = temp;
+                exit = true;
+            }
+        }
+        /*
+        put each element of tempArray into the random row that was picked
+        */
+        for (int i = 0; i < orderings[randomRow].length; i++) {
+            orderings[randomRow][i] = tempArray[i];
+        }
+        return orderings;
+    }
+
+    /**
      * This method takes the orderings and the fitness costs as parameters and takes the first element of
      * the fitness cost array and
-     * @param orderings
-     * @param fitnessCostArray
+     * @param orderings 2D Orderings Array
+     * @param fitnessCostArray Fitness cost Array
      * @return
      */
     private static int[][] selection(int[][] orderings, int[] fitnessCostArray)
