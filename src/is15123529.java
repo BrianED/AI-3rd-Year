@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Scanner;
 
@@ -52,6 +51,9 @@ public class is15123529
         ArrayList<Integer> uniqueOrdering;
         int[] fitnessCostArray = new int[params[1]];
 
+        /*
+        Loop and check for duplicate orderings
+         */
         int uniqueCounter = 0;
         boolean rowDuplicateCheck = false;
         while (!rowDuplicateCheck) {
@@ -74,21 +76,64 @@ public class is15123529
 
         /* Print orderings and fitness cost */
         printResults(orderings, fitnessCostArray, "Ordering");
+        System.out.println();
 
         /*
-        Genetic Algorithm
+        Genetic Algorithm loop
          */
-        int re = (100 - (params[6] + params[7]));
         int generationCounter = 0;
         while (generationCounter < params[0]) {
+
             /*
             Selection
              */
             orderings = selection(orderings, fitnessCostArray);
+
+            int chance = (int)(Math.random() * 100 + 1); // Chance of applying techniques
+
             /*
             Mutation
              */
-            orderings = mutation(orderings);
+            if (chance <= params[7]) {
+                orderings = mutation(orderings);
+
+            /*
+            Crossover
+             */
+
+            } else if (chance > params[7] && chance <= params[6]){
+                orderings = crossover(orderings);
+            }
+
+            /*
+            else Reproduction
+             */
+
+            /*
+            Print out best ordering from current generation
+             */
+            int[] orderingLowestFitness = orderings[0];
+            System.out.println("Generation " + (generationCounter + 1));
+            System.out.print("Ordering: ");
+            for(int i = 0; i < orderingLowestFitness.length; i++) {
+                System.out.print(orderingLowestFitness[i] + " ");
+            }
+            System.out.println();
+
+            for (int i = 1; i <= params[5]; i++) {
+                System.out.print("Session " + i + "\t");
+            }
+            System.out.println();
+            for (int i = 0; i < ed; i++) {
+                for (int j = 0, cutOff = i; j <= params[5] && cutOff < orderingLowestFitness.length; j++, cutOff += ed) {
+                    System.out.print(orderingLowestFitness[cutOff] + "\t\t\t");
+                }
+                System.out.println();
+            }
+
+            System.out.println();
+            System.out.println("Fitness cost: " + fitnessCostArray[0]);
+            System.out.println("----------------------------------");
 
             generationCounter++;
         }
@@ -130,6 +175,38 @@ public class is15123529
         for (int i = 0; i < orderings[randomRow].length; i++) {
             orderings[randomRow][i] = tempArray[i];
         }
+
+        return orderings;
+    }
+
+    /**
+     * This method randomly selects two orderings and generates random crossover points for each
+     * It then loops through these temporary arrays and swaps the elements in each after the crossover intersection
+     * The two random orderings are placed back into the 2D orderings array and returned
+     * @param orderings 2D orderings Array
+     * @return
+     */
+    private static int[][] crossover(int[][] orderings)
+    {
+        int r1 = (int)(Math.random() * orderings.length);
+        int[] ordering1 = orderings[r1];
+
+        int r2 = (int)(Math.random() * orderings.length);
+        int[] ordering2 = orderings[r2];
+
+        int crossoverIntersection = (int)(Math.random() * (orderings[0].length - 2) + 2);
+        int length = ordering1.length - crossoverIntersection;
+        int[] swap = new int[length];
+
+        for(int i = crossoverIntersection ; i < ordering1.length; i++) {
+            swap[i - crossoverIntersection] = ordering1[i];
+            ordering1[i] = ordering2[i];
+            ordering2[i] = swap[i - crossoverIntersection];
+        }
+
+        orderings[r1] = ordering1;
+        orderings[r2] = ordering2;
+
         return orderings;
     }
 
@@ -157,7 +234,7 @@ public class is15123529
                     fitnessCostArray[i] = fitnessCostArray[i + 1];
                     orderings[i] = orderings[i + 1];
                     fitnessCostArray[i + 1] = temp;
-                    orderings[i + 1]=tempArray;
+                    orderings[i + 1] = tempArray;
                     swapped = true;
                 }
             }
@@ -189,6 +266,7 @@ public class is15123529
                 }
             }
         }
+
         return true;
     }
 
@@ -204,6 +282,7 @@ public class is15123529
                 return false;
             }
         }
+
         return true;
     }
 
@@ -262,6 +341,7 @@ public class is15123529
             fitnessCost = 0;    // Reset fitness cost for next ordering
             count = 0;          // Reset count
         }
+
         return results;
     }
 
@@ -281,6 +361,7 @@ public class is15123529
                 }
             }
         }
+
         return fitnessCost;
     }
 
@@ -295,10 +376,13 @@ public class is15123529
     {
         int ctr = 0;
 
-        for(int i = 0; i < studentSchedule.length; i++)
-            for(int j = 0; j < split.length; j++)
-                if(studentSchedule[i] == split[j])
+        for(int i = 0; i < studentSchedule.length; i++) {
+            for (int j = 0; j < split.length; j++) {
+                if (studentSchedule[i] == split[j]) {
                     ctr++;
+                }
+            }
+        }
 
         return ctr > 1;
     }
